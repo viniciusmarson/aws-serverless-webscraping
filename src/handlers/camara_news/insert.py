@@ -64,6 +64,8 @@ def check_if_notice_is_new(notice):
 
 def handler(event, _):
     """Lambda function entry point"""
+    print(event)
+
     driver = scrap(PAGE)
     soup = BeautifulSoup(driver.page_source, features="html.parser")
     notices = get_all_notices_in_page(soup)
@@ -80,4 +82,4 @@ def handler(event, _):
         payloads = Notice.objects.insert(news, load_bulk=False)
         invoke_update_section_function(payloads)
 
-    return "Success" + total_news + "news inserted"
+    return "Success" + str(total_news) + "news inserted"

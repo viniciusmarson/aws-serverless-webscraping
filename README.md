@@ -2,7 +2,7 @@
 
 This is a basic project to collect notices from a web page and save the information in a MongoDB database. 
 
-You can use this basic project as a guideline for your webscrapings projects that needs to go to a page, collect things that are new and maybe if the first collection was not enough invoke a process to collect the full information about it.
+You can use this project as a guideline for your webscrapings projects that needs to go to a page, collect things that are new and maybe if the first collection was not enough invoke a process to collect the full information about it.
 
 This project uses the [Serverless Framework](https://www.serverless.com/) as a [IaC](https://en.wikipedia.org/wiki/Infrastructure_as_code) to create all infrastructure necessary to complete the job. 
 
@@ -42,28 +42,25 @@ The new information collected will be sent to a queue (AWS SQS) to be consumed b
 
 ---
 
-## Running in your machine
+## Running
 
-Firt of all you will need to install the dependencies of this project. 
+Go inside de `src/` folder.
 
-Run: `pip install -r src/requirements.txt`
+`make install`
+Install project dependencies for run the project
 
-In your environment variable you will need to have de DATABASE_URI seted or have a running MongoDB in your machine. 
+`make test`
+Run the project local in your machine. 
 
-To install and run MongoDB Localy check this [article](https://www.mongodb.com/docs/manual/installation/)
+WARNING:
+- In your environment variable you will need to have de DATABASE_URI seted or have a running MongoDB in your machine. To install and run MongoDB Localy check this [article](https://www.mongodb.com/docs/manual/installation/)
+- You also need the [chrome driver](https://chromedriver.chromium.org/downloads) in your coputer. Make de download and put the file in `/opt/chromedriver`
 
-## Running in Docker
-Inside the `src/` folder where Dockerfile is located run:
+`make docker`
+Run the application inside a docker container. For this command work, you need to have the Docker installed and runing in your machine.
 
-`docker build --platform linux/amd64 -t scrapper:latest .`
-
-After that run the container: 
-
-`docker run -p 9000:8080  scrapper:latest insert.handler`
-
-And then, call the function:
-
-`curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'`
+`make signal`
+Send a signal to docker container endpoint to run the handle function.
 
 
 ## References

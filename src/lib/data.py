@@ -2,6 +2,7 @@
 import os
 from mongoengine import connect, StringField, DateField, DateTimeField, Document
 
+
 client = connect(host=os.getenv('DATABASE_URI', 'mongodb://localhost'))
 
 
