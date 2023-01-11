@@ -1,0 +1,6 @@
+bs4
+boto3
+mongoengine
+pymongo
+pymongo[srv]
+selenium==4.4.3

@@ -1,0 +1,98 @@
+
+service: aws-serverless-webscraping
+
+plugins:
+  - serverless-iam-roles-per-function
+  - serverless-plugin-aws-alerts
+
+params:
+  production:
+    region: sa-east-1 # Sao Paulo
+  testing:
+    region: us-east-1 # Virginia
+  development:
+    region: us-west-2 # Oregon
+
+provider:
+  name: aws
+  stage: ${opt:stage}
+  region: ${param:region}
+  ecr:
+    images:
+      scraping:
+        path: ./
+
+## Optional
+custom:
+  alerts:
+   stages:
+     - production
+     - testing
+   topics:
+     alarm:
+       topic: #The arn of the topic that you probably have to handle/alert errors
+   alarms:
+     - functionErrors
+     - functionThrottles
+
+functions:
+  insert:
+    name: insert-aws-serverless-webscraping-${self:provider.stage}
+    iamRoleStatementsInherit: true
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - sqs:SendMessage
+          - sqs:DeleteMessage
+          - sqs:ReceiveMessage
+        Resource: "*"
+    image:  
+      name: scraping
+      command:
+        - insert.handler
+    description: Insert news found in camara.leg.br/noticias - ${self:provider.stage}.
+    memorySize: 3008
+    ephemeralStorageSize: 3008
+    runtime: python3.7
+    timeout: 900
+    environment:
+      ENVIRONMENT: ${self:provider.stage}
+      DATABASE_URI: ${env:DATABASE_URI}
+      REGION: ${self:provider.region}
+    events:
+      - schedule:
+          enabled: true
+          name: insert-aws-serverless-webscraping-${self:provider.stage}
+          description: 'Invoke lambda to search for news in camara.leg.br/noticias  - ${self:provider.stage}'
+          rate: rate(15 minutes)
+
+  update:
+    name: update-notice-content-${self:provider.stage}
+    image:
+      name: scraping
+      command:
+        - update.handler
+    description: Update notice information with completed content - ${self:provider.stage}.
+    memorySize: 2048
+    ephemeralStorageSize: 3008
+    runtime: python3.7
+    timeout: 300
+    maximumRetryAttempts: 2
+    environment:
+      ENVIRONMENT: ${self:provider.stage}
+      DATABASE_URI: ${env:DATABASE_URI}
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - NoticesToUpdateQueue
+              - Arn
+          batchSize: 1
+
+resources:
+  Resources:
+    NoticesToUpdateQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: notices-to-update-${self:provider.stage}
+        VisibilityTimeout: 360

@@ -1,0 +1,45 @@
+image: atlassian/default-image:3
+
+#########################################
+# Reusable deployment steps definition  #
+#########################################
+deployStepScript: &deployStepScript
+  caches:
+    - node
+  script:
+    - docker version
+  services:
+    - docker
+  script:
+    - npm -g config set user root
+    - npm install -g serverless
+    - npm install
+    - serverless config credentials --provider aws --key ${AWS_KEY} --secret ${AWS_SECRET}
+    - serverless deploy --stage ${STAGE}
+
+pipelines:
+  custom:
+    deploy-serverless:
+      - variables:
+          - name: STAGE
+            default: "development"
+            allowed-values:        
+             - development
+             - testing
+             - production
+      - step:
+          <<: *deployStepScript
+          name: "Manual deploy"
+
+  branches:
+    develop:
+      - step:
+          <<: *deployStepScript
+          name: "Deploy develop"
+          deployment: develop
+
+    staging:
+      - step:
+          <<: *deployStepScript
+          name: "Deploy staging"
+          deployment: staging
