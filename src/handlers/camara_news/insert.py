@@ -10,8 +10,10 @@ from lib.scraping import scrap
 PAGE = 'https://www.camara.leg.br/noticias/ultimas'
 
 QUEUE_URL = 'https://' + \
-    os.getenv('REGION', 'us-west-1') + \
-    '.queue.amazonaws.com/546106101945/update-camara-new-content-' + \
+    os.getenv('AWS_REGION', 'us-west-1') + \
+    '.queue.amazonaws.com/' + \
+    os.getenv('AWS_ACCOUNT_ID', '') + \
+    '/update-camara-new-content-' + \
     os.getenv('ENVIRONMENT', 'development')
 
 
@@ -83,3 +85,7 @@ def handler(event, _):
         invoke_update_section_function(payloads)
 
     return "Success" + str(total_news) + "news inserted"
+
+
+if __name__ == "__main__":
+    handler('Testing as script', '')

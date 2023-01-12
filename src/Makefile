@@ -1,12 +1,14 @@
 install:
 	pip install -r requirements.txt
 
-test:
-	ENVIRONMENT=local python3 -c 'from handlers.camara_news.insert import handler; handler("", "")'
+run:
+	ENVIRONMENT=local python3 -m handlers.$(handler).$(file)
 
-docker: 
+docker-build: 
 	docker build --platform linux/amd64 -t scrapper:latest .
-	docker run -p 9000:8080 --platform linux/amd64 scrapper:latest handlers/camara_news/insert.handler
+
+docker-run: 
+	docker run -p 9000:8080 --platform linux/amd64 scrapper:latest handlers/$(handler)/$(file).handler
 
 signal:
 	curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'

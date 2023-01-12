@@ -38,3 +38,7 @@ def handler(event, _):
     notice.save()
 
     return 'Success'
+
+
+if __name__ == "__main__":
+    handler('Testing as script', '')

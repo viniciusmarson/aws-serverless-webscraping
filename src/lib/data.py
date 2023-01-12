@@ -3,16 +3,16 @@ import os
 from mongoengine import connect, StringField, DateField, DateTimeField, Document
 
 
-client = connect(host=os.getenv('DATABASE_URI', 'mongodb://localhost'))
+client = connect(host=os.getenv('MONGO_URI', 'mongodb://localhost'))
 
 
 class Notice(Document):
     """ORM for 'notices' collection in mongodb"""
-    title = StringField(required=True)
-    subtitle = StringField(required=True)
-    image = StringField(required=True)
-    content = StringField(required=True)
     url = StringField(required=True)
+    title = StringField(required=True)
+    subtitle = StringField()
+    image = StringField()
+    content = StringField()
     date = DateField()
     createdAt = DateTimeField()
     updatedAt = DateTimeField()
