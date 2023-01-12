@@ -13,6 +13,6 @@ class Notice(Document):
     subtitle = StringField()
     image = StringField()
     content = StringField()
-    date = DateField()
+    date = DateTimeField()
     createdAt = DateTimeField()
     updatedAt = DateTimeField()

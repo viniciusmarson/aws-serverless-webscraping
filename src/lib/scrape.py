@@ -5,9 +5,8 @@ from selenium import webdriver
 
 ENVIRONMENT = os.getenv('ENVIRONMENT')
 
-
-def scrap(url):
-    """"Scrap data form page url"""
+def create_options():
+    """Create chrome options based on environment variables"""
     options = webdriver.ChromeOptions()
 
     if ENVIRONMENT != 'local':
@@ -31,7 +30,11 @@ def scrap(url):
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-dev-tools")
         options.add_argument("--no-zygote")
+    return options
 
-    driver = webdriver.Chrome("/opt/chromedriver", options=options)
+
+def scrape(url):
+    """"Scrap data form page url"""
+    driver = webdriver.Chrome("/opt/chromedriver", options=create_options())
     driver.get(url)
     return driver

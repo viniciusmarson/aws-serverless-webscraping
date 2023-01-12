@@ -59,7 +59,10 @@ See the architecture bellow:
 Go inside de `src/` folder.
 
 `make install`
-Install project dependencies for run the project
+Install project and dev dependencies.
+
+`make test`
+Run the unit tests of this project located in `tests/` folder
 
 `make run handler=camara_news file=insert`
 Run the project local in your machine. The first argument is the name of the handler and the second the file inside the handler that you wanna run. 

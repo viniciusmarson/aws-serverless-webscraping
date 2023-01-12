@@ -53,10 +53,10 @@ functions:
       command:
         - handlers/camara_news/insert.handler
     description: Insert news found in camara.leg.br/noticias - ${self:provider.stage}.
-    memorySize: 3008
+    memorySize: 2048
     ephemeralStorageSize: 3008
     runtime: python3.7
-    timeout: 900
+    timeout: 180
     environment:
       ENVIRONMENT: ${self:provider.stage}
       MONGO_URI: ${env:MONGO_URI}
@@ -79,7 +79,7 @@ functions:
     memorySize: 2048
     ephemeralStorageSize: 3008
     runtime: python3.7
-    timeout: 300
+    timeout: 180
     maximumRetryAttempts: 2
     environment:
       ENVIRONMENT: ${self:provider.stage}
@@ -98,5 +98,5 @@ resources:
     NoticesToUpdateQueue:
       Type: "AWS::SQS::Queue"
       Properties:
-        QueueName: notices-to-update-${self:provider.stage}
+        QueueName: camara-notices-to-update-${self:provider.stage}
         VisibilityTimeout: 360

@@ -4,7 +4,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from bson.objectid import ObjectId
 from lib.data import Notice
-from lib.scraping import scrap
+from lib.scrape import scrape
 
 # Scraped URL example:
 # https://www.camara.leg.br/noticias/933637-moveis-projetados-por-oscar-e-anna-niemeyer-foram-salvos-da-destruicao/
@@ -12,12 +12,11 @@ from lib.scraping import scrap
 
 def handler(event, _):
     """Lambda function entry point"""
-
     print(event)
     body = json.loads(event['Records'][0]['body'])
 
     notice = Notice.objects.get(id=ObjectId(body['id']))
-    driver = scrap(notice.url)
+    driver = scrape(notice.url)
     soup = BeautifulSoup(driver.page_source, features="html.parser")
 
     subtitle = soup.find('p', attrs={'class': 'g-artigo__descricao'})

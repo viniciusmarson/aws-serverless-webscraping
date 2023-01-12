@@ -1,8 +1,12 @@
 install:
 	pip install -r requirements.txt
+	pip install -r requirements-dev.txt
 
 run:
 	ENVIRONMENT=local python3 -m handlers.$(handler).$(file)
+
+test:
+	pytest
 
 docker-build: 
 	docker build --platform linux/amd64 -t scrapper:latest .
